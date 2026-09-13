@@ -1,0 +1,58 @@
+2. Product Sales Exploratory Analysis
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load the dataset
+df = pd.read_csv("productsales.csv")
+
+# Dataset shape
+print("Shape of Dataset:")
+print(df.shape)
+
+# Data types
+print("\nData Types:")
+print(df.dtypes)
+
+# Statistical summary
+print("\nStatistical Summary:")
+print(df.describe())
+
+# Number of products in each category
+category_count = df["Category"].value_counts()
+
+print("\nNumber of Products in Each Category:")
+print(category_count)
+
+# Highest and lowest category
+print("\nCategory with Highest Number of Products:")
+print(category_count.idxmax())
+
+print("\nCategory with Lowest Number of Products:")
+print(category_count.idxmin())
+
+# Correlation between Unit Sold and Profit
+print("\nCorrelation between Units Sold and Profit:")
+print(df["Unit_Sold"].corr(df["Profit"]))
+
+# Scatter plot
+plt.figure(figsize=(6, 4))
+plt.scatter(df["Unit_Sold"], df["Profit"])
+plt.xlabel("Units Sold")
+plt.ylabel("Profit")
+plt.title("Units Sold vs Profit")
+plt.show()
+
+# Histogram of Selling Price
+plt.figure(figsize=(6, 4))
+plt.hist(df["Selling_Price"], bins=5)
+plt.xlabel("Selling Price")
+plt.ylabel("Frequency")
+plt.title("Distribution of Selling Price")
+plt.show()
+
+# Box plot for outliers
+plt.figure(figsize=(6, 4))
+plt.boxplot(df["Selling_Price"])
+plt.ylabel("Selling Price")
+plt.title("Box Plot of Selling Price")
+plt.show()
