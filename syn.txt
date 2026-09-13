@@ -90,6 +90,7 @@ df.sort_values(
 )
 
 # ---------------- OUTLIERS (IQR METHOD) ----------------
+# Pandas DataFrame Method
 Q1 = df["Salary"].quantile(0.25)
 Q3 = df["Salary"].quantile(0.75)
 IQR = Q3 - Q1
@@ -105,6 +106,17 @@ df = df[
     (df["Salary"] >= lower) &
     (df["Salary"] <= upper)
 ]
+
+# NumPy / List Method
+Q1 = np.percentile(production, 25)
+Q3 = np.percentile(production, 75)
+
+IQR = Q3 - Q1
+lower = Q1 - 1.5 * IQR
+upper = Q3 + 1.5 * IQR
+
+outliers = [x for x in production if x < lower or x > upper]
+
 
 # ---------------- DATA VISUALIZATION (PLOTS) ----------------
 import matplotlib.pyplot as plt
