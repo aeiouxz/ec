@@ -109,54 +109,51 @@ df = df[
 # ---------------- DATA VISUALIZATION (PLOTS) ----------------
 import matplotlib.pyplot as plt
 
-# ----- Histogram -----
-plt.hist(
-    df["Age"],
-    bins=5
-)
+# Histogram
+plt.figure(figsize=(6, 4))
+plt.hist(df["Age"], bins=5)
+plt.xlabel("Age")
+plt.ylabel("Frequency")
+plt.title("Distribution of Age")
 plt.show()
 
-# ----- Box Plot -----
-plt.boxplot(
-    df["Salary"]
-)
+# Box Plot
+plt.figure(figsize=(6, 4))
+plt.boxplot(df["Salary"])
+plt.ylabel("Salary")
+plt.title("Box Plot of Salary")
 plt.show()
 
-# ----- Scatter Plot -----
-plt.scatter(
-    df["Years of Experience"],
-    df["Salary"]
-)
+# Scatter Plot
+plt.figure(figsize=(6, 4))
+plt.scatter(df["Years of Experience"], df["Salary"])
+plt.xlabel("Years of Experience")
+plt.ylabel("Salary")
+plt.title("Years of Experience vs Salary")
 plt.show()
 
-# ----- Bar Chart -----
+# Bar Chart
+plt.figure(figsize=(6, 4))
 count = df["Department"].value_counts()
-plt.bar(
-    count.index,
-    count.values
-)
+plt.bar(count.index, count.values)
+plt.xlabel("Department")
+plt.ylabel("Count")
+plt.title("Department Distribution")
 plt.show()
 
-# ----- Pie Chart -----
+# Pie Chart
+plt.figure(figsize=(6, 4))
 count = df["Department"].value_counts()
-plt.pie(
-    count.values,
-    labels=count.index,
-    autopct="%1.1f%%"
-)
+plt.pie(count.values, labels=count.index, autopct="%1.1f%%")
+plt.title("Department Share")
 plt.show()
 
-# ----- Heatmap -----
+# Heatmap
 import seaborn as sns
-
-correlation = df.corr(
-    numeric_only=True
-)
-sns.heatmap(
-    correlation,
-    annot=True,
-    cmap="coolwarm"
-)
+plt.figure(figsize=(6, 4))
+correlation = df.corr(numeric_only=True)
+sns.heatmap(correlation, annot=True, cmap="coolwarm")
+plt.title("Correlation Heatmap")
 plt.show()
 
 # ---------------- STATISTICAL ANALYSIS & DISTRIBUTIONS ----------------
