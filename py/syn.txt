@@ -1,0 +1,191 @@
+import pandas as pd
+df = pd.read_csv("data.csv")
+df.to_csv("output.csv", index=False)
+
+import pandas as pd
+df = pd.read_json("data.json")
+df.to_json("output.json")
+
+import pandas as pd
+df = pd.read_excel("data.xlsx")
+df.to_excel("output.xlsx", index=False)
+
+df.head()
+df.head(10)
+
+df.shape
+
+df.columns
+
+df.dtypes
+
+df.info()
+
+df.describe()
+
+df.isnull().sum()
+
+df["Name"]
+
+df[["Name", "Marks"]]
+
+df[df["Marks"] > 75]
+
+df["Marks"].mean()
+
+df["Marks"].median()
+
+df["Marks"].mode()
+
+df["Marks"].var()
+
+df["Marks"].std()
+
+df["Marks"].max()
+
+df["Marks"].min()
+
+df["Category"].value_counts()
+
+df["Sales"].corr(df["Profit"])
+
+df.corr(numeric_only=True)
+
+df["Age"] = df["Age"].fillna(
+    df["Age"].mean()
+)
+
+df["Age"] = df["Age"].fillna(
+    df["Age"].median()
+)
+
+df["Department"] = df["Department"].fillna(
+    df["Department"].mode()[0]
+)
+
+df = df.dropna()
+
+df["Category"] = pd.cut(
+    df["Age"],
+    bins=[0, 18, 40, 100],
+    labels=["Low", "Medium", "High"]
+)
+
+df = pd.get_dummies(
+    df,
+    columns=["Gender"]
+)
+
+df.groupby("Department")["Marks"].mean()
+
+df.sort_values(
+    "Marks",
+    ascending=False
+)
+
+Q1 = df["Salary"].quantile(0.25)
+Q3 = df["Salary"].quantile(0.75)
+IQR = Q3 - Q1
+lower = Q1 - 1.5 * IQR
+upper = Q3 + 1.5 * IQR
+
+outliers = df[
+    (df["Salary"] < lower) |
+    (df["Salary"] > upper)
+]
+
+df = df[
+    (df["Salary"] >= lower) &
+    (df["Salary"] <= upper)
+]
+
+import matplotlib.pyplot as plt
+plt.hist(
+    df["Age"],
+    bins=5
+)
+plt.show()
+
+plt.boxplot(
+    df["Salary"]
+)
+plt.show()
+
+plt.scatter(
+    df["Years of Experience"],
+    df["Salary"]
+)
+plt.show()
+
+count = df["Department"].value_counts()
+plt.bar(
+    count.index,
+    count.values
+)
+plt.show()
+
+count = df["Department"].value_counts()
+plt.pie(
+    count.values,
+    labels=count.index,
+    autopct="%1.1f%%"
+)
+plt.show()
+
+import seaborn as sns
+correlation = df.corr(
+    numeric_only=True
+)
+sns.heatmap(
+    correlation,
+    annot=True,
+
+    cmap="coolwarm"
+)
+plt.show()
+from scipy.stats import norm
+values = df["Test Scores"]
+mu, sigma = norm.fit(values)
+plt.hist(
+    values,
+    bins=5,
+    density=True
+)
+x = np.linspace(
+    min(values),
+    max(values),
+    100
+)
+y = norm.pdf(
+    x,
+
+    mu,
+    sigma
+)
+plt.plot(x, y)
+plt.show()
+from scipy.stats import ttest_ind
+t_stat, p_value = ttest_ind(
+
+    df["Branch A"],
+    df["Branch B"]
+)
+
+print(t_stat)
+print(p_value)
+
+import numpy as np
+np.mean(values)
+
+np.median(values)
+np.var(values)
+
+np.std(values)
+np.percentile(
+    values,
+    25
+)
+np.percentile(
+    values,
+    75
+)
