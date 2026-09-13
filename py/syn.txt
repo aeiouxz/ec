@@ -1,3 +1,4 @@
+# ---------------- DATA INPUT / OUTPUT ----------------
 import pandas as pd
 df = pd.read_csv("data.csv")
 df.to_csv("output.csv", index=False)
@@ -10,6 +11,7 @@ import pandas as pd
 df = pd.read_excel("data.xlsx")
 df.to_excel("output.xlsx", index=False)
 
+# ---------------- DATA EXPLORATION / INSPECTION ----------------
 df.head()
 df.head(10)
 
@@ -23,14 +25,31 @@ df.info()
 
 df.describe()
 
-df.isnull().sum()
-
+# ---------------- SELECTION & FILTERING ----------------
 df["Name"]
 
 df[["Name", "Marks"]]
 
 df[df["Marks"] > 75]
 
+# ---------------- MISSING VALUES & CLEANING ----------------
+df.isnull().sum()
+
+df["Age"] = df["Age"].fillna(
+    df["Age"].mean()
+)
+
+df["Age"] = df["Age"].fillna(
+    df["Age"].median()
+)
+
+df["Department"] = df["Department"].fillna(
+    df["Department"].mode()[0]
+)
+
+df = df.dropna()
+
+# ---------------- DESCRIPTIVE STATISTICS (PANDAS) ----------------
 df["Marks"].mean()
 
 df["Marks"].median()
@@ -51,20 +70,7 @@ df["Sales"].corr(df["Profit"])
 
 df.corr(numeric_only=True)
 
-df["Age"] = df["Age"].fillna(
-    df["Age"].mean()
-)
-
-df["Age"] = df["Age"].fillna(
-    df["Age"].median()
-)
-
-df["Department"] = df["Department"].fillna(
-    df["Department"].mode()[0]
-)
-
-df = df.dropna()
-
+# ---------------- DATA TRANSFORMATION & AGGREGATION ----------------
 df["Category"] = pd.cut(
     df["Age"],
     bins=[0, 18, 40, 100],
@@ -83,6 +89,7 @@ df.sort_values(
     ascending=False
 )
 
+# ---------------- OUTLIERS (IQR METHOD) ----------------
 Q1 = df["Salary"].quantile(0.25)
 Q3 = df["Salary"].quantile(0.75)
 IQR = Q3 - Q1
@@ -99,24 +106,30 @@ df = df[
     (df["Salary"] <= upper)
 ]
 
+# ---------------- DATA VISUALIZATION (PLOTS) ----------------
 import matplotlib.pyplot as plt
+
+# ----- Histogram -----
 plt.hist(
     df["Age"],
     bins=5
 )
 plt.show()
 
+# ----- Box Plot -----
 plt.boxplot(
     df["Salary"]
 )
 plt.show()
 
+# ----- Scatter Plot -----
 plt.scatter(
     df["Years of Experience"],
     df["Salary"]
 )
 plt.show()
 
+# ----- Bar Chart -----
 count = df["Department"].value_counts()
 plt.bar(
     count.index,
@@ -124,6 +137,7 @@ plt.bar(
 )
 plt.show()
 
+# ----- Pie Chart -----
 count = df["Department"].value_counts()
 plt.pie(
     count.values,
@@ -132,41 +146,49 @@ plt.pie(
 )
 plt.show()
 
+# ----- Heatmap -----
 import seaborn as sns
+
 correlation = df.corr(
     numeric_only=True
 )
 sns.heatmap(
     correlation,
     annot=True,
-
     cmap="coolwarm"
 )
 plt.show()
+
+# ---------------- STATISTICAL ANALYSIS & DISTRIBUTIONS ----------------
 from scipy.stats import norm
+
 values = df["Test Scores"]
 mu, sigma = norm.fit(values)
+
 plt.hist(
     values,
     bins=5,
     density=True
 )
+
 x = np.linspace(
     min(values),
     max(values),
     100
 )
+
 y = norm.pdf(
     x,
-
     mu,
     sigma
 )
+
 plt.plot(x, y)
 plt.show()
-from scipy.stats import ttest_ind
-t_stat, p_value = ttest_ind(
 
+from scipy.stats import ttest_ind
+
+t_stat, p_value = ttest_ind(
     df["Branch A"],
     df["Branch B"]
 )
@@ -174,17 +196,22 @@ t_stat, p_value = ttest_ind(
 print(t_stat)
 print(p_value)
 
+# ---------------- NUMPY STATISTICS ----------------
 import numpy as np
+
 np.mean(values)
 
 np.median(values)
+
 np.var(values)
 
 np.std(values)
+
 np.percentile(
     values,
     25
 )
+
 np.percentile(
     values,
     75
