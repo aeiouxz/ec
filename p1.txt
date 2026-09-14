@@ -1,20 +1,15 @@
 1. Hospital Missing Values
+
 import pandas as pd
 
-# Load the dataset
 df = pd.read_csv("hospital.csv")
 
-# Identify missing values
 print("Missing Values:")
 print(df.isnull().sum())
 
-# Fill missing Age using median
 df["Age"] = df["Age"].fillna(df["Age"].median())
 
-# Fill missing Department using mode
 df["Department"] = df["Department"].fillna(df["Department"].mode()[0])
 
-# Display cleaned dataset
 print("\nCleaned Dataset:")
 print(df)
-

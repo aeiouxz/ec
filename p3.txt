@@ -1,19 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Production values
 production = np.array([95, 98, 100, 97, 102, 99, 101, 96, 103, 250])
 
-# Calculate mean
 mean = np.mean(production)
 
-# Calculate median
 median = np.median(production)
 
-# Calculate variance
 variance = np.var(production)
 
-# Calculate standard deviation
 std = np.std(production)
 
 print("Mean:", mean)
@@ -21,14 +16,12 @@ print("Median:", median)
 print("Variance:", variance)
 print("Standard Deviation:", std)
 
-# Box plot to identify outlier
 plt.figure(figsize=(6, 4))
 plt.boxplot(production)
 plt.ylabel("Production")
 plt.title("Box Plot of Daily Production")
 plt.show()
 
-# Histogram to examine distribution
 plt.figure(figsize=(6, 4))
 plt.hist(production, bins=5)
 plt.xlabel("Production")
@@ -36,7 +29,6 @@ plt.ylabel("Frequency")
 plt.title("Distribution of Daily Production")
 plt.show()
 
-# Remove outlier
 production_without_outlier = production[production != 250]
 
 print("\nStatistics without Outlier:")
