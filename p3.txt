@@ -1,40 +1,43 @@
-import numpy as np
-import matplotlib.pyplot as plt
+# 1. Install CPU checker
+sudo apt install -y cpu-checker
 
-production = np.array([95, 98, 100, 97, 102, 99, 101, 96, 103, 250])
+# 2. Check KVM support
+kvm-ok
 
-mean = np.mean(production)
+# 3. Install KVM packages
+sudo apt install -y qemu-kvm libvirt-daemon libvirt-clients bridge-utils virt-manager
 
-median = np.median(production)
+# 4. Check libvirt service
+sudo systemctl status libvirtd
 
-variance = np.var(production)
+# 5. Start and enable libvirt
+sudo systemctl enable --now libvirtd
 
-std = np.std(production)
+# 6. Check Windows ISO
+ls -l /home/mca/Documents/Win10_2004_English_x64.iso
 
-print("Mean:", mean)
-print("Median:", median)
-print("Variance:", variance)
-print("Standard Deviation:", std)
+# 7. Create Windows 10 VM
+sudo virt-install \
+  --name=win10-vm \
+  --os-variant=win10 \
+  --vcpus=2 \
+  --ram=4096 \
+  --disk size=64 \
+  --graphics spice \
+  --cdrom=/home/mca/Documents/Win10_2004_English_x64.iso \
+  --network network=default
 
-plt.figure(figsize=(6, 4))
-plt.boxplot(production)
-plt.ylabel("Production")
-plt.title("Box Plot of Daily Production")
-plt.show()
+# 8. Install Windows 10
+# Use the Windows installer inside the VM
 
-plt.figure(figsize=(6, 4))
-plt.hist(production, bins=5)
-plt.xlabel("Production")
-plt.ylabel("Frequency")
-plt.title("Distribution of Daily Production")
-plt.show()
+# 9. Check all VMs
+virsh list --all
 
-production_without_outlier = production[production != 250]
+# 10. Start VM
+virsh start win10-vm
 
-print("\nStatistics without Outlier:")
-print("Mean:", np.mean(production_without_outlier))
-print("Standard Deviation:", np.std(production_without_outlier))
+# 11. Shut down VM
+virsh shutdown win10-vm
 
-print("\nConclusion:")
-print("250 is an outlier.")
-print("Median is a more appropriate measure of typical production.")
+# 12. Force stop VM
+virsh destroy win10-vm
