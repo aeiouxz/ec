@@ -1,55 +1,85 @@
-1.  docker --help
-2.  docker run --help
-3.  docker images
-4.  docker pull ubuntu
-5.  docker run ubuntu
-6.  docker ps
-7.  docker ps -a
-8.  docker run -it ubuntu bash
-9.  exit
-10. docker run -it --name myubuntu ubuntu bash
-11. docker start myubuntu
-12. docker exec -it myubuntu bash
-13. docker exec myubuntu whoami
-14. docker exec myubuntu pwd
-15. docker stop myubuntu
-16. docker restart myubuntu
-17. docker run -d --name backgroundubuntu ubuntu sleep 3600
-18. docker exec -it backgroundubuntu bash
-19. docker logs backgroundubuntu
-20. docker inspect backgroundubuntu
-21. docker rm backgroundubuntu
+Yes. Here are **both Question 1 and Question 2 answers in one single code block**, so you can practice them easily.
 
-22. docker pull nginx
-23. docker run -d --name mynginx -p 8080:80 nginx
-24. -p 8080:80
-25. docker ps
-26. http://localhost:8080
-27. docker stop mynginx
-28. docker start mynginx
-29. docker rm mynginx
+```text
+========================
+QUESTION 1 – DEPARTMENT WEB
+========================
 
-30. cd Desktop
-31. mkdir docker-web-app
-32. cd docker-web-app
-33. pwd
-34. notepad index.html
-35. dir
-36. notepad Dockerfile
-37. type Dockerfile
-38. docker build -t mydockerweb .
-39. docker images
-40. docker run -d --name mydockerweb-container -p 8080:80 mydockerweb
-41. -p 8080:80
-42. docker stop mydockerweb-container
-43. docker rm mydockerweb-container
-44. docker build -t mydockerweb .
+mkdir department-web
+cd department-web
 
-45. docker tag mydockerweb YOUR_USERNAME/mydockerweb:latest
-46. docker login
-47. docker push YOUR_USERNAME/mydockerweb:latest
-48. docker pull YOUR_USERNAME/mydockerweb:latest
-49. docker run -d --name testweb -p 8081:80 YOUR_USERNAME/mydockerweb:latest
-50. -p 8081:80
-51. docker ps
-52. http://localhost:8081
+notepad index.html
+
+notepad Dockerfile
+
+docker build -t departmentweb .
+
+docker run -d --name department-site -p 8080:80 departmentweb
+
+docker ps
+
+http://localhost:8080
+
+docker logs department-site
+
+docker tag departmentweb adarshr2028/departmentweb:latest
+
+docker login
+
+docker push adarshr2028/departmentweb:latest
+
+docker pull adarshr2028/departmentweb:latest
+
+docker run -d --name department-site-test -p 8081:80 adarshr2028/departmentweb:latest
+
+http://localhost:8081
+
+
+========================
+QUESTION 2 – STUDENT HELP DESK
+========================
+
+mkdir student-helpdesk
+cd student-helpdesk
+
+notepad index.html
+
+notepad Dockerfile
+
+docker build -t studenthelpdesk .
+
+docker run -d --name helpdesk -p 8088:80 studenthelpdesk
+
+docker ps
+
+docker exec helpdesk ls /usr/share/nginx/html/index.html
+
+docker logs helpdesk
+
+docker stop helpdesk
+
+docker start helpdesk
+
+docker tag studenthelpdesk YOUR_USERNAME/studenthelpdesk:latest
+
+docker login
+
+docker push YOUR_USERNAME/studenthelpdesk:latest
+
+docker pull YOUR_USERNAME/studenthelpdesk:latest
+
+docker run -d --name helpdesk-test -p 8089:80 YOUR_USERNAME/studenthelpdesk:latest
+
+http://localhost:8089
+```
+
+### Dockerfile for both
+
+```dockerfile
+FROM nginx:latest
+COPY index.html /usr/share/nginx/html/index.html
+EXPOSE 80
+```
+
+
+```
