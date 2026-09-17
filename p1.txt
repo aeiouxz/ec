@@ -1,15 +1,71 @@
-1. Hospital Missing Values
 
-import pandas as pd
 
-df = pd.read_csv("hospital.csv")
+# 🔴 Docker CLI & Containers
 
-print("Missing Values:")
-print(df.isnull().sum())
+| #  | What to remember               | Command                                                   |
+| -- | ------------------------------ | --------------------------------------------------------- |
+| 1  | **Docker Help**                | `docker --help`                                           |
+| 2  | **Run Help**                   | `docker run --help`                                       |
+| 3  | **List Images**                | `docker images`                                           |
+| 4  | **Pull Image**                 | `docker pull ubuntu`                                      |
+| 5  | **Run Container**              | `docker run ubuntu`                                       |
+| 6  | **Running Containers**         | `docker ps`                                               |
+| 7  | **All Containers**             | `docker ps -a`                                            |
+| 8  | **Interactive Ubuntu**         | `docker run -it ubuntu bash`                              |
+| 9  | **Exit Container**             | `exit`                                                    |
+| 10 | **Named Container**            | `docker run -it --name myubuntu ubuntu bash`              |
+| 11 | **Start Container**            | `docker start myubuntu`                                   |
+| 12 | **Enter Container**            | `docker exec -it myubuntu bash`                           |
+| 13 | **Execute Command**            | `docker exec myubuntu whoami`                             |
+| 14 | **Container PWD**              | `docker exec myubuntu pwd`                                |
+| 15 | **Stop Container**             | `docker stop myubuntu`                                    |
+| 16 | **Restart Container**          | `docker restart myubuntu`                                 |
+| 17 | **Background Container**       | `docker run -d --name backgroundubuntu ubuntu sleep 3600` |
+| 18 | **Enter Background Container** | `docker exec -it backgroundubuntu bash`                   |
+| 19 | **Container Logs**             | `docker logs backgroundubuntu`                            |
+| 20 | **Inspect Container**          | `docker inspect backgroundubuntu`                         |
+| 21 | **Remove Container**           | `docker rm backgroundubuntu`                              |
 
-df["Age"] = df["Age"].fillna(df["Age"].median())
+# 🔴 Nginx
 
-df["Department"] = df["Department"].fillna(df["Department"].mode()[0])
+| #  | What to remember     | Command                                         |
+| -- | -------------------- | ----------------------------------------------- |
+| 22 | **Pull Nginx**       | `docker pull nginx`                             |
+| 23 | **Run Nginx + Port** | `docker run -d --name mynginx -p 8080:80 nginx` |
+| 24 | **Check Nginx**      | `docker ps`                                     |
+| 25 | **Open Nginx**       | `http://localhost:8080`                         |
+| 26 | **Stop Nginx**       | `docker stop mynginx`                           |
+| 27 | **Start Nginx**      | `docker start mynginx`                          |
+| 28 | **Remove Nginx**     | `docker rm mynginx`                             |
 
-print("\nCleaned Dataset:")
-print(df)
+# 🟡 Dockerfile & Custom Image
+
+| #  | What to remember            | Command                                                             |
+| -- | --------------------------- | ------------------------------------------------------------------- |
+| 29 | **Go Desktop**              | `cd Desktop`                                                        |
+| 30 | **Create Folder**           | `mkdir docker-web-app`                                              |
+| 31 | **Enter Folder**            | `cd docker-web-app`                                                 |
+| 32 | **Current Location**        | `pwd`                                                               |
+| 33 | **Create HTML**             | `notepad index.html`                                                |
+| 34 | **List Files**              | `dir`                                                               |
+| 35 | **Create Dockerfile**       | `notepad Dockerfile`                                                |
+| 36 | **View Dockerfile**         | `type Dockerfile`                                                   |
+| 37 | **Build Image**             | `docker build -t mydockerweb .`                                     |
+| 38 | **Check Images**            | `docker images`                                                     |
+| 39 | **Run Custom Image**        | `docker run -d --name mydockerweb-container -p 8080:80 mydockerweb` |
+| 40 | **Stop Custom Container**   | `docker stop mydockerweb-container`                                 |
+| 41 | **Remove Custom Container** | `docker rm mydockerweb-container`                                   |
+| 42 | **Rebuild Image**           | `docker build -t mydockerweb .`                                     |
+
+# 🟡 Docker Hub
+
+| #  | What to remember        | Command                                                                    |
+| -- | ----------------------- | -------------------------------------------------------------------------- |
+| 43 | **Tag Image**           | `docker tag mydockerweb YOUR_USERNAME/mydockerweb:latest`                  |
+| 44 | **Docker Login**        | `docker login`                                                             |
+| 45 | **Push Image**          | `docker push YOUR_USERNAME/mydockerweb:latest`                             |
+| 46 | **Pull From Hub**       | `docker pull YOUR_USERNAME/mydockerweb:latest`                             |
+| 47 | **Run Published Image** | `docker run -d --name testweb -p 8081:80 YOUR_USERNAME/mydockerweb:latest` |
+| 48 | **Check Container**     | `docker ps`                                                                |
+| 49 | **Open Website**        | `http://localhost:8081`                                                    |
+
