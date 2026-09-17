@@ -1,48 +1,55 @@
-2. Product Sales Exploratory Analysis
-import pandas as pd
-import matplotlib.pyplot as plt
+1.  docker --help
+2.  docker run --help
+3.  docker images
+4.  docker pull ubuntu
+5.  docker run ubuntu
+6.  docker ps
+7.  docker ps -a
+8.  docker run -it ubuntu bash
+9.  exit
+10. docker run -it --name myubuntu ubuntu bash
+11. docker start myubuntu
+12. docker exec -it myubuntu bash
+13. docker exec myubuntu whoami
+14. docker exec myubuntu pwd
+15. docker stop myubuntu
+16. docker restart myubuntu
+17. docker run -d --name backgroundubuntu ubuntu sleep 3600
+18. docker exec -it backgroundubuntu bash
+19. docker logs backgroundubuntu
+20. docker inspect backgroundubuntu
+21. docker rm backgroundubuntu
 
-df = pd.read_csv("productsales.csv")
+22. docker pull nginx
+23. docker run -d --name mynginx -p 8080:80 nginx
+24. -p 8080:80
+25. docker ps
+26. http://localhost:8080
+27. docker stop mynginx
+28. docker start mynginx
+29. docker rm mynginx
 
-print("Shape of Dataset:")
-print(df.shape)
+30. cd Desktop
+31. mkdir docker-web-app
+32. cd docker-web-app
+33. pwd
+34. notepad index.html
+35. dir
+36. notepad Dockerfile
+37. type Dockerfile
+38. docker build -t mydockerweb .
+39. docker images
+40. docker run -d --name mydockerweb-container -p 8080:80 mydockerweb
+41. -p 8080:80
+42. docker stop mydockerweb-container
+43. docker rm mydockerweb-container
+44. docker build -t mydockerweb .
 
-print("\nData Types:")
-print(df.dtypes)
-
-print("\nStatistical Summary:")
-print(df.describe())
-
-category_count = df["Category"].value_counts()
-
-print("\nNumber of Products in Each Category:")
-print(category_count)
-
-print("\nCategory with Highest Number of Products:")
-print(category_count.idxmax())
-
-print("\nCategory with Lowest Number of Products:")
-print(category_count.idxmin())
-
-print("\nCorrelation between Units Sold and Profit:")
-print(df["Unit_Sold"].corr(df["Profit"]))
-
-plt.figure(figsize=(6, 4))
-plt.scatter(df["Unit_Sold"], df["Profit"])
-plt.xlabel("Units Sold")
-plt.ylabel("Profit")
-plt.title("Units Sold vs Profit")
-plt.show()
-
-plt.figure(figsize=(6, 4))
-plt.hist(df["Selling_Price"], bins=5)
-plt.xlabel("Selling Price")
-plt.ylabel("Frequency")
-plt.title("Distribution of Selling Price")
-plt.show()
-
-plt.figure(figsize=(6, 4))
-plt.boxplot(df["Selling_Price"])
-plt.ylabel("Selling Price")
-plt.title("Box Plot of Selling Price")
-plt.show()
+45. docker tag mydockerweb YOUR_USERNAME/mydockerweb:latest
+46. docker login
+47. docker push YOUR_USERNAME/mydockerweb:latest
+48. docker pull YOUR_USERNAME/mydockerweb:latest
+49. docker run -d --name testweb -p 8081:80 YOUR_USERNAME/mydockerweb:latest
+50. -p 8081:80
+51. docker ps
+52. http://localhost:8081
