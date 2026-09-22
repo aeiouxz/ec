@@ -1,43 +1,145 @@
-# 1. Install CPU checker
-sudo apt install -y cpu-checker
+Create an Android application that implements a Text Counter using two Buttons and two TextViews.
 
-# 2. Check KVM support
-kvm-ok
+TextViews
 
-# 3. Install KVM packages
-sudo apt install -y qemu-kvm libvirt-daemon libvirt-clients bridge-utils virt-manager
+TextView 1 — displays the current counter value
+TextView 2 — acts as Reset
 
-# 4. Check libvirt service
-sudo systemctl status libvirtd
+Buttons
 
-# 5. Start and enable libvirt
-sudo systemctl enable --now libvirtd
++ — Increment
+− — Decrement
 
-# 6. Check Windows ISO
-ls -l /home/mca/Documents/Win10_2004_English_x64.iso
+The initial counter value should be 0. The + button increases the value by 1, the − button decreases it by 1, and clicking the Reset TextView resets the counter to 0.
 
-# 7. Create Windows 10 VM
-sudo virt-install \
-  --name=win10-vm \
-  --os-variant=win10 \
-  --vcpus=2 \
-  --ram=4096 \
-  --disk size=64 \
-  --graphics spice \
-  --cdrom=/home/mca/Documents/Win10_2004_English_x64.iso \
-  --network network=default
+MainActivity.java
+package com.example.adarsh3;
 
-# 8. Install Windows 10
-# Use the Windows installer inside the VM
+import android.os.Bundle;
+import android.widget.Button;
+import android.widget.TextView;
 
-# 9. Check all VMs
-virsh list --all
+import androidx.appcompat.app.AppCompatActivity;
 
-# 10. Start VM
-virsh start win10-vm
+public class MainActivity extends AppCompatActivity {
 
-# 11. Shut down VM
-virsh shutdown win10-vm
+    TextView tvCount, tvReset;
+    Button btnPlus, btnMinus;
 
-# 12. Force stop VM
-virsh destroy win10-vm
+    // Counter variable
+    int count = 0;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        tvCount = findViewById(R.id.tvCount);
+        tvReset = findViewById(R.id.tvReset);
+
+        btnPlus = findViewById(R.id.btnPlus);
+        btnMinus = findViewById(R.id.btnMinus);
+
+        tvCount.setText("0");
+        tvReset.setText("Reset");
+
+        // Increment
+        btnPlus.setOnClickListener(v -> {
+
+            count++;
+
+            tvCount.setText(String.valueOf(count));
+        });
+
+        // Decrement
+        btnMinus.setOnClickListener(v -> {
+
+            count--;
+
+            tvCount.setText(String.valueOf(count));
+        });
+
+        // Reset
+        tvReset.setOnClickListener(v -> {
+
+            count = 0;
+
+            tvCount.setText("0");
+        });
+    }
+}
+activity_main.xml
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EF8080">
+
+    <TextView
+        android:id="@+id/tvCount"
+        android:layout_width="64dp"
+        android:layout_height="91dp"
+        android:text="0"
+        android:textSize="60sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="150dp" />
+
+    <Button
+        android:id="@+id/btnPlus"
+        android:layout_width="114dp"
+        android:layout_height="74dp"
+        android:text="+"
+        android:textSize="40sp"
+        app:layout_constraintTop_toBottomOf="@id/tvCount"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="70dp"
+        android:layout_marginTop="50dp" />
+
+    <Button
+        android:id="@+id/btnMinus"
+        android:layout_width="104dp"
+        android:layout_height="71dp"
+        android:text="-"
+        android:textSize="40sp"
+        app:layout_constraintTop_toBottomOf="@id/tvCount"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="70dp"
+        android:layout_marginTop="50dp" />
+
+    <TextView
+        android:id="@+id/tvReset"
+        android:layout_width="131dp"
+        android:layout_height="74dp"
+        android:background="#DDDDDD"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:text="Reset"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/btnPlus"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="40dp" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Number Counter"
+        android:textSize="48sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="50dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
