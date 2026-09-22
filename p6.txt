@@ -1,0 +1,194 @@
+Develop an Android application to calculate the total, percentage and grade from marks obtained in five subjects.
+
+Widgets:
+
+EditText — marks for five subjects
+Button — Calculate
+TextView — Result
+
+When Calculate is clicked, display the Total, Percentage and Grade.
+
+MainActivity.java
+package com.example.adarsh4;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+
+    EditText et1, et2, et3, et4, et5;
+    Button btnCalculate;
+    TextView tvResult;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        et1 = findViewById(R.id.et1);
+        et2 = findViewById(R.id.et2);
+        et3 = findViewById(R.id.et3);
+        et4 = findViewById(R.id.et4);
+        et5 = findViewById(R.id.et5);
+
+        btnCalculate = findViewById(R.id.btnCalculate);
+        tvResult = findViewById(R.id.tvResult);
+
+        btnCalculate.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                // Read marks
+                double m1 = Double.parseDouble(
+                        et1.getText().toString());
+
+                double m2 = Double.parseDouble(
+                        et2.getText().toString());
+
+                double m3 = Double.parseDouble(
+                        et3.getText().toString());
+
+                double m4 = Double.parseDouble(
+                        et4.getText().toString());
+
+                double m5 = Double.parseDouble(
+                        et5.getText().toString());
+
+                // Calculate total
+                double total = m1 + m2 + m3 + m4 + m5;
+
+                // Calculate percentage
+                double percentage = total / 5;
+
+                String grade;
+
+                // Determine grade
+                if (percentage >= 90)
+                    grade = "A+";
+                else if (percentage >= 80)
+                    grade = "A";
+                else if (percentage >= 70)
+                    grade = "B";
+                else if (percentage >= 60)
+                    grade = "C";
+                else if (percentage >= 50)
+                    grade = "D";
+                else
+                    grade = "F";
+
+                // Display result
+                tvResult.setText(
+                        "Total = " + total +
+                        "\nPercentage = " + percentage +
+                        "\nGrade = " + grade
+                );
+            }
+        });
+    }
+}
+activity_main.xml
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <EditText
+        android:id="@+id/et1"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:hint="Subject 1"
+        android:inputType="number"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="160dp" />
+
+    <EditText
+        android:id="@+id/et2"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:hint="Subject 2"
+        android:inputType="number"
+        app:layout_constraintTop_toBottomOf="@id/et1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp" />
+
+    <EditText
+        android:id="@+id/et3"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:hint="Subject 3"
+        android:inputType="number"
+        app:layout_constraintTop_toBottomOf="@id/et2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp" />
+
+    <EditText
+        android:id="@+id/et4"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:hint="Subject 4"
+        android:inputType="number"
+        app:layout_constraintTop_toBottomOf="@id/et3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp" />
+
+    <EditText
+        android:id="@+id/et5"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:hint="Subject 5"
+        android:inputType="number"
+        app:layout_constraintTop_toBottomOf="@id/et4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp" />
+
+    <Button
+        android:id="@+id/btnCalculate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Calculate"
+        app:layout_constraintTop_toBottomOf="@id/et5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="20dp" />
+
+    <TextView
+        android:id="@+id/tvResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Result:"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@id/btnCalculate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="25dp" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mark Calculator"
+        android:textSize="34sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="70dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
