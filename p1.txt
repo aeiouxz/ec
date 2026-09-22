@@ -1,71 +1,203 @@
+Create an Android application to perform the four basic arithmetic operations using the following widgets.
+
+EditText
+
+Number 1
+Number 2
+
+Buttons
+
+Calculate
+Reset
+
+TextViews
+
+Addition Result
+Subtraction Result
+Multiplication Result
+Division Result
+
+When Calculate is clicked, display all four results. When Reset is clicked, clear both input fields and all four results.
 
 
-# 🔴 Docker CLI & Containers
+MainActivity.java
+package com.example.adarsh2;
 
-| #  | What to remember               | Command                                                   |
-| -- | ------------------------------ | --------------------------------------------------------- |
-| 1  | **Docker Help**                | `docker --help`                                           |
-| 2  | **Run Help**                   | `docker run --help`                                       |
-| 3  | **List Images**                | `docker images`                                           |
-| 4  | **Pull Image**                 | `docker pull ubuntu`                                      |
-| 5  | **Run Container**              | `docker run ubuntu`                                       |
-| 6  | **Running Containers**         | `docker ps`                                               |
-| 7  | **All Containers**             | `docker ps -a`                                            |
-| 8  | **Interactive Ubuntu**         | `docker run -it ubuntu bash`                              |
-| 9  | **Exit Container**             | `exit`                                                    |
-| 10 | **Named Container**            | `docker run -it --name myubuntu ubuntu bash`              |
-| 11 | **Start Container**            | `docker start myubuntu`                                   |
-| 12 | **Enter Container**            | `docker exec -it myubuntu bash`                           |
-| 13 | **Execute Command**            | `docker exec myubuntu whoami`                             |
-| 14 | **Container PWD**              | `docker exec myubuntu pwd`                                |
-| 15 | **Stop Container**             | `docker stop myubuntu`                                    |
-| 16 | **Restart Container**          | `docker restart myubuntu`                                 |
-| 17 | **Background Container**       | `docker run -d --name backgroundubuntu ubuntu sleep 3600` |
-| 18 | **Enter Background Container** | `docker exec -it backgroundubuntu bash`                   |
-| 19 | **Container Logs**             | `docker logs backgroundubuntu`                            |
-| 20 | **Inspect Container**          | `docker inspect backgroundubuntu`                         |
-| 21 | **Remove Container**           | `docker rm backgroundubuntu`                              |
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
-# 🔴 Nginx
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
 
-| #  | What to remember     | Command                                         |
-| -- | -------------------- | ----------------------------------------------- |
-| 22 | **Pull Nginx**       | `docker pull nginx`                             |
-| 23 | **Run Nginx + Port** | `docker run -d --name mynginx -p 8080:80 nginx` |
-| 24 | **Check Nginx**      | `docker ps`                                     |
-| 25 | **Open Nginx**       | `http://localhost:8080`                         |
-| 26 | **Stop Nginx**       | `docker stop mynginx`                           |
-| 27 | **Start Nginx**      | `docker start mynginx`                          |
-| 28 | **Remove Nginx**     | `docker rm mynginx`                             |
+public class MainActivity extends AppCompatActivity {
 
-# 🟡 Dockerfile & Custom Image
+    EditText et1, et2;
+    Button btnCalculate, btnReset;
+    TextView tvAdd, tvSub, tvMul, tvDiv;
 
-| #  | What to remember            | Command                                                             |
-| -- | --------------------------- | ------------------------------------------------------------------- |
-| 29 | **Go Desktop**              | `cd Desktop`                                                        |
-| 30 | **Create Folder**           | `mkdir docker-web-app`                                              |
-| 31 | **Enter Folder**            | `cd docker-web-app`                                                 |
-| 32 | **Current Location**        | `pwd`                                                               |
-| 33 | **Create HTML**             | `notepad index.html`                                                |
-| 34 | **List Files**              | `dir`                                                               |
-| 35 | **Create Dockerfile**       | `notepad Dockerfile`                                                |
-| 36 | **View Dockerfile**         | `type Dockerfile`                                                   |
-| 37 | **Build Image**             | `docker build -t mydockerweb .`                                     |
-| 38 | **Check Images**            | `docker images`                                                     |
-| 39 | **Run Custom Image**        | `docker run -d --name mydockerweb-container -p 8080:80 mydockerweb` |
-| 40 | **Stop Custom Container**   | `docker stop mydockerweb-container`                                 |
-| 41 | **Remove Custom Container** | `docker rm mydockerweb-container`                                   |
-| 42 | **Rebuild Image**           | `docker build -t mydockerweb .`                                     |
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
 
-# 🟡 Docker Hub
+        et1 = findViewById(R.id.et1);
+        et2 = findViewById(R.id.et2);
 
-| #  | What to remember        | Command                                                                    |
-| -- | ----------------------- | -------------------------------------------------------------------------- |
-| 43 | **Tag Image**           | `docker tag mydockerweb YOUR_USERNAME/mydockerweb:latest`                  |
-| 44 | **Docker Login**        | `docker login`                                                             |
-| 45 | **Push Image**          | `docker push YOUR_USERNAME/mydockerweb:latest`                             |
-| 46 | **Pull From Hub**       | `docker pull YOUR_USERNAME/mydockerweb:latest`                             |
-| 47 | **Run Published Image** | `docker run -d --name testweb -p 8081:80 YOUR_USERNAME/mydockerweb:latest` |
-| 48 | **Check Container**     | `docker ps`                                                                |
-| 49 | **Open Website**        | `http://localhost:8081`                                                    |
+        btnCalculate = findViewById(R.id.btnCalculate);
+        btnReset = findViewById(R.id.btnReset);
 
+        tvAdd = findViewById(R.id.tvAdd);
+        tvSub = findViewById(R.id.tvSub);
+        tvMul = findViewById(R.id.tvMul);
+        tvDiv = findViewById(R.id.tvDiv);
+
+        // Calculate button
+        btnCalculate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // Get numbers from EditText
+                double num1 =
+                        Double.parseDouble(et1.getText().toString());
+
+                double num2 =
+                        Double.parseDouble(et2.getText().toString());
+
+                // Display addition
+                tvAdd.setText("Addition: " + (num1 + num2));
+
+                // Display subtraction
+                tvSub.setText("Subtraction: " + (num1 - num2));
+
+                // Display multiplication
+                tvMul.setText("Multiplication: " + (num1 * num2));
+
+                // Check before division
+                if (num2 != 0) {
+                    tvDiv.setText("Division: " + (num1 / num2));
+                } else {
+                    tvDiv.setText("Division: Cannot divide by zero");
+                }
+            }
+        });
+
+        // Reset button
+        btnReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // Clear input fields
+                et1.setText("");
+                et2.setText("");
+
+                // Clear results
+                tvAdd.setText("");
+                tvSub.setText("");
+                tvMul.setText("");
+                tvDiv.setText("");
+            }
+        });
+    }
+}
+activity_main.xml
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <EditText
+        android:id="@+id/et1"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:hint="Number 1"
+        android:inputType="numberDecimal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="192dp" />
+
+    <EditText
+        android:id="@+id/et2"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:hint="Number 2"
+        android:inputType="numberDecimal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="232dp"
+        android:layout_marginTop="192dp" />
+
+    <Button
+        android:id="@+id/btnCalculate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Calculate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="260dp" />
+
+    <Button
+        android:id="@+id/btnReset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reset"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="252dp"
+        android:layout_marginTop="260dp" />
+
+    <TextView
+        android:id="@+id/tvAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Addition Result: "
+        android:textSize="23sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="488dp" />
+
+    <TextView
+        android:id="@+id/tvSub"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Subtraction Result: "
+        android:textSize="23sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="392dp" />
+
+    <TextView
+        android:id="@+id/tvMul"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Multiplication Result: "
+        android:textSize="23sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="440dp" />
+
+    <TextView
+        android:id="@+id/tvDiv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Division Result: "
+        android:textSize="23sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="544dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
