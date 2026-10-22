@@ -1,10 +1,238 @@
-|   No. | Question                                          |
-| ----: | ------------------------------------------------- |
-| **1** | Four Basic Arithmetic Operations                  |
-| **2** | Copy an Image from One ImageView to Another       |
-| **3** | Text Counter using Increment, Decrement and Reset |
-| **4** | Check Whether a Number is Prime                   |
-| **5** | Simple Calculator                                 |
-| **6** | Calculate Total, Percentage and Grade             |
-| **7** | BMI Calculator with Toast                         |
-| **8** | Employee Salary Calculator                        |
+1. House Price Prediction — Linear Regression
+Uses the house-area/price values provided in the document. Predict price for 1700 sq.ft., calculate MSE, show equation and plot.
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+
+data = {
+    "Area": [800,900,1000,1100,1200,1300,1400,1500,1600,1800,2000,2200],
+    "Price": [35,40,45,48,52,58,62,68,72,82,92,101]
+}
+df = pd.DataFrame(data)
+X = df[["Area"]]
+y = df["Price"]
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42)
+
+model = LinearRegression()
+model.fit(X_train, y_train)
+pred = model.predict(X_test)
+print("Predicted price:", model.predict([[1700]])[0], "lakhs")
+print("MSE:", mean_squared_error(y_test, pred))
+print("Equation: Price =", model.coef_[0], "* Area +", model.intercept_)
+
+plt.scatter(X, y, label="Actual")
+plt.plot(X, model.predict(X), color="red", label="Regression line")
+plt.xlabel("Area (sq.ft.)"); plt.ylabel("Price (lakhs)")
+plt.legend(); plt.show()
+Remember: Positive slope means larger houses tend to have higher prices. MSE measures average squared prediction error.
+2. Student Study Hours and Marks — Linear Regression
+Predict marks for 7.5 study hours and evaluate the model.
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+
+df = pd.DataFrame({
+    "StudyHours": [1,2,3,4,5,6,7,8,9,10],
+    "Marks": [35,40,45,50,55,62,66,72,78,85]
+})
+X = df[["StudyHours"]]
+y = df["Marks"]
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42)
+model = LinearRegression().fit(X_train, y_train)
+pred = model.predict(X_test)
+print("Marks for 7.5 hours:", model.predict([[7.5]])[0])
+print("MSE:", mean_squared_error(y_test, pred))
+print("Equation: Marks =", model.coef_[0], "* StudyHours +", model.intercept_)
+plt.scatter(X, y)
+plt.plot(X, model.predict(X), color="red")
+plt.xlabel("Study Hours"); plt.ylabel("Marks"); plt.show()
+Remember: The coefficient is the predicted change in marks for one extra study hour.
+3. Employee Salary — Linear Regression
+Predict salary for 6.5 years of experience and interpret the slope.
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+
+df = pd.DataFrame({
+    "Experience": [1,2,3,4,5,6,7,8,9,10],
+    "Salary": [22000,25000,28000,32000,36000,40000,44000,48000,52000,57000]
+})
+X = df[["Experience"]]
+y = df["Salary"]
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42)
+model = LinearRegression().fit(X_train, y_train)
+pred = model.predict(X_test)
+print("Salary at 6.5 years:", model.predict([[6.5]])[0])
+print("MSE:", mean_squared_error(y_test, pred))
+print("Coefficient:", model.coef_[0])
+print("Intercept:", model.intercept_)
+plt.scatter(X, y)
+plt.plot(X, model.predict(X), color="red")
+plt.xlabel("Experience (years)"); plt.ylabel("Salary"); plt.show()
+Remember: A positive coefficient means salary tends to increase as experience increases.
+4. Advertising Expenditure and Sales — Linear Regression
+Predict sales when advertising expenditure is 75 thousand.
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+
+df = pd.DataFrame({
+    "Advertising": [10,20,30,40,50,60,70,80,90,100],
+    "Sales": [15,20,25,29,35,39,45,48,53,58]
+})
+X = df[["Advertising"]]
+y = df["Sales"]
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42)
+model = LinearRegression().fit(X_train, y_train)
+pred = model.predict(X_test)
+print("Sales for advertising 75:", model.predict([[75]])[0])
+print("MSE:", mean_squared_error(y_test, pred))
+plt.scatter(X, y)
+plt.plot(X, model.predict(X), color="red")
+plt.xlabel("Advertising (thousand rupees)"); plt.ylabel("Sales (lakh)")
+plt.show()
+Remember: Use the same units as the question. The plot shows whether sales generally increase with advertising.
+5. Electricity Consumption — Linear Regression
+Predict consumption at 29°C and plot the fitted line.
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+
+df = pd.DataFrame({
+    "Temperature": [18,20,22,24,26,28,30,32,34,36],
+    "Consumption": [120,130,142,150,165,178,190,205,220,235]
+})
+X = df[["Temperature"]]
+y = df["Consumption"]
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42)
+model = LinearRegression().fit(X_train, y_train)
+pred = model.predict(X_test)
+print("Consumption at 29 C:", model.predict([[29]])[0], "kWh")
+print("MSE:", mean_squared_error(y_test, pred))
+plt.scatter(X, y)
+plt.plot(X, model.predict(X), color="red")
+plt.xlabel("Temperature (C)"); plt.ylabel("Consumption (kWh)")
+plt.show()
+Remember: The dataset suggests consumption increases as temperature rises.
+6. Multiple Linear Regression — House Price
+Use Area, Bedrooms and Age to predict Price. The new applicant values are not specified in the document, so this code predicts test rows and demonstrates a new prediction.
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+
+df = pd.DataFrame({
+    "Area": [800,1000,1200,1400,1600,1800,2000,2200,2400,2600],
+    "Bedrooms": [2,2,3,3,3,4,4,4,5,5],
+    "Age": [15,12,10,8,6,5,4,3,2,1],
+    "Price": [40,48,58,68,75,86,96,105,118,128]
+})
+X = df[["Area", "Bedrooms", "Age"]]
+y = df["Price"]
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42)
+model = LinearRegression().fit(X_train, y_train)
+pred = model.predict(X_test)
+print("Predictions:", pred)
+print("Actual:", list(y_test))
+print("MSE:", mean_squared_error(y_test, pred))
+print("Coefficients:", model.coef_)
+print("Intercept:", model.intercept_)
+# Example new house: area=1700, bedrooms=3, age=5
+print("New house price:", model.predict([[1700, 3, 5]])[0])
+Remember: The coefficient for each feature indicates its estimated contribution while the other features are held constant. The example input is only a demonstration; change it if the exam gives different values.
+7. Logistic Regression — Loan Approval (Question 1)
+CSV column names in the document are Income, CreditScore, LoanAmount and Approved. This assumes Approved is coded as 0/1.
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+
+df = pd.read_csv("LoanApproval.csv")
+print(df.head())
+X = df[["Income", "CreditScore", "LoanAmount"]]
+y = df["Approved"]
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42)
+model = LogisticRegression(max_iter=1000)
+model.fit(X_train, y_train)
+print("Predicted classes:", model.predict(X_test))
+print("Probabilities:", model.predict_proba(X_test))
+new_customer = pd.DataFrame(
+    [[65000, 710, 28000]],
+    columns=["Income", "CreditScore", "LoanAmount"])
+print("New customer class:", model.predict(new_customer)[0])
+print("New customer probabilities:", model.predict_proba(new_customer)[0])
+Remember: Class labels depend on how Approved is encoded in the CSV. The first probability column corresponds to model.classes_[0], and the second to model.classes_[1].
+8. Logistic Regression — Student Pass/Fail (Question 2)
+The document specifies Study Hours, Attendance, Internal Marks and Pass/Fail, but does not include the CSV rows or exact column labels. Adjust the names to match StudentResult.csv.
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+
+df = pd.read_csv("StudentResult.csv")
+print(df.head())
+X = df[["StudyHours", "Attendance", "InternalMarks"]]
+y = df["Result"]  # change to the actual target column name
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42)
+model = LogisticRegression(max_iter=1000)
+model.fit(X_train, y_train)
+print("Predicted results:", model.predict(X_test))
+print("Probabilities:", model.predict_proba(X_test))
+new_student = pd.DataFrame(
+    [[6, 85, 72]],
+    columns=["StudyHours", "Attendance", "InternalMarks"])
+print("New student result:", model.predict(new_student)[0])
+print("Probabilities:", model.predict_proba(new_student)[0])
+Remember: If the CSV uses spaces or different capital letters in its column names, use those exact names.
+9. K-Means — Customer Segmentation (K = 2)
+Use Income and SpendingScore to assign each customer to one of two clusters.
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+
+df = pd.read_csv("Customer.csv")
+print(df.head())
+X = df[["Income", "SpendingScore"]]
+model = KMeans(n_clusters=2, random_state=0, n_init=10)
+df["Cluster"] = model.fit_predict(X)
+print(df[["Income", "SpendingScore", "Cluster"]])
+print("Centroids:", model.cluster_centers_)
+plt.scatter(df["Income"], df["SpendingScore"], c=df["Cluster"])
+plt.scatter(model.cluster_centers_[:, 0],
+            model.cluster_centers_[:, 1], marker="X", s=200)
+plt.xlabel("Annual Income"); plt.ylabel("Spending Score")
+plt.show()
+Remember: Cluster numbers (0 and 1) are arbitrary labels. Interpret groups by comparing their centroid income and spending scores.
+10. K-Means — Student Performance (K = 3)
+Group students based on StudyHours and Marks.
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+
+df = pd.read_csv("StudentPerformance.csv")
+print(df.head())
+X = df[["StudyHours", "Marks"]]
+model = KMeans(n_clusters=3, random_state=0, n_init=10)
+df["Cluster"] = model.fit_predict(X)
+print(df[["StudyHours", "Marks", "Cluster"]])
+print("Centroids:", model.cluster_centers_)
+plt.scatter(df["StudyHours"], df["Marks"], c=df["Cluster"])
+plt.scatter(model.cluster_centers_[:, 0],
+            model.cluster_centers_[:, 1], marker="X", s=200)
+plt.xlabel("Study Hours"); plt.ylabel("Marks"); plt.show()
