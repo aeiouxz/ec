@@ -1,203 +1,155 @@
-Create an Android application to perform the four basic arithmetic operations using the following widgets.
+## Intent Type: Explicit Intent
 
-EditText
+you should say which intent is that too .... **To send multiple fields from one activity to another in an Android app:**
+1. Create Two Activities – MainActivity (Sender) and SecondActivity (Receiver).
+2. Use Intent to Pass Multiple Fields (e.g., Name, Age, Email).
+3. Retrieve Data in SecondActivity and Display it.
 
-Number 1
-Number 2
+### 1. MainActivity.java (Sender)
 
-Buttons
+```
+package com.example.intentdemo;
 
-Calculate
-Reset
-
-TextViews
-
-Addition Result
-Subtraction Result
-Multiplication Result
-Division Result
-
-When Calculate is clicked, display all four results. When Reset is clicked, clear both input fields and all four results.
-
-
-MainActivity.java
-package com.example.adarsh2;
-
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
-
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    EditText et1, et2;
-    Button btnCalculate, btnReset;
-    TextView tvAdd, tvSub, tvMul, tvDiv;
+    EditText name, age, email;
+    Button send;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        et1 = findViewById(R.id.et1);
-        et2 = findViewById(R.id.et2);
+        name = findViewById(R.id.name);
+        age = findViewById(R.id.age);
+        email = findViewById(R.id.email);
+        send = findViewById(R.id.send);
 
-        btnCalculate = findViewById(R.id.btnCalculate);
-        btnReset = findViewById(R.id.btnReset);
+        send.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this,
+                    SecondActivity.class);
 
-        tvAdd = findViewById(R.id.tvAdd);
-        tvSub = findViewById(R.id.tvSub);
-        tvMul = findViewById(R.id.tvMul);
-        tvDiv = findViewById(R.id.tvDiv);
+            intent.putExtra("name", name.getText().toString());
+            intent.putExtra("age", age.getText().toString());
+            intent.putExtra("email", email.getText().toString());
 
-        // Calculate button
-        btnCalculate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                // Get numbers from EditText
-                double num1 =
-                        Double.parseDouble(et1.getText().toString());
-
-                double num2 =
-                        Double.parseDouble(et2.getText().toString());
-
-                // Display addition
-                tvAdd.setText("Addition: " + (num1 + num2));
-
-                // Display subtraction
-                tvSub.setText("Subtraction: " + (num1 - num2));
-
-                // Display multiplication
-                tvMul.setText("Multiplication: " + (num1 * num2));
-
-                // Check before division
-                if (num2 != 0) {
-                    tvDiv.setText("Division: " + (num1 / num2));
-                } else {
-                    tvDiv.setText("Division: Cannot divide by zero");
-                }
-            }
-        });
-
-        // Reset button
-        btnReset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                // Clear input fields
-                et1.setText("");
-                et2.setText("");
-
-                // Clear results
-                tvAdd.setText("");
-                tvSub.setText("");
-                tvMul.setText("");
-                tvDiv.setText("");
-            }
+            startActivity(intent);
         });
     }
 }
-activity_main.xml
-<?xml version="1.0" encoding="utf-8"?>
+```
 
-<androidx.constraintlayout.widget.ConstraintLayout
+### 2. SecondActivity.java (Receiver)
+
+```
+package com.example.intentdemo;
+
+import android.os.Bundle;
+import android.widget.TextView;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class SecondActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_second);
+
+        TextView result = findViewById(R.id.result);
+
+        String name = getIntent().getStringExtra("name");
+        String age = getIntent().getStringExtra("age");
+        String email = getIntent().getStringExtra("email");
+
+        result.setText("Name: " + name
+                + "\nAge: " + age
+                + "\nEmail: " + email);
+    }
+}
+```
+
+### 3. `activity_main.xml` (Sender UI)
+
+Place three `EditText` fields and one `Button` in a vertical `LinearLayout`.
+
+```
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:orientation="vertical"
+    android:padding="20dp">
 
     <EditText
-        android:id="@+id/et1"
-        android:layout_width="150dp"
+        android:id="@+id/name"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Number 1"
-        android:inputType="numberDecimal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="192dp" />
+        android:hint="Enter Name" />
 
     <EditText
-        android:id="@+id/et2"
-        android:layout_width="150dp"
+        android:id="@+id/age"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Number 2"
-        android:inputType="numberDecimal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="232dp"
-        android:layout_marginTop="192dp" />
+        android:hint="Enter Age"
+        android:inputType="number" />
+
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Email"
+        android:inputType="textEmailAddress" />
 
     <Button
-        android:id="@+id/btnCalculate"
-        android:layout_width="wrap_content"
+        android:id="@+id/send"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Calculate"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="260dp" />
+        android:text="Send Data" />
 
-    <Button
-        android:id="@+id/btnReset"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Reset"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="252dp"
-        android:layout_marginTop="260dp" />
+</LinearLayout>
+```
 
-    <TextView
-        android:id="@+id/tvAdd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Addition Result: "
-        android:textSize="23sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="488dp" />
+### 4. `activity_second.xml` (Receiver UI)
+
+```
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp">
 
     <TextView
-        android:id="@+id/tvSub"
-        android:layout_width="wrap_content"
+        android:id="@+id/result"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Subtraction Result: "
-        android:textSize="23sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="392dp" />
+        android:textSize="20sp" />
 
-    <TextView
-        android:id="@+id/tvMul"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Multiplication Result: "
-        android:textSize="23sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="440dp" />
+</LinearLayout>
+```
 
-    <TextView
-        android:id="@+id/tvDiv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Division Result: "
-        android:textSize="23sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="544dp" />
+### 5. AndroidManifest.xml
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+Make sure both activities are declared inside the `application` tag. Keep `MainActivity` as the launcher activity.
+
+```
+<activity android:name=".SecondActivity" />
+
+<activity
+    android:name=".MainActivity"
+    android:exported="true">
+    <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+    </intent-filter>
+</activity>
+```
+
