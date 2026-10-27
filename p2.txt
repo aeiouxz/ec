@@ -1,121 +1,241 @@
-Create an Android application that copies an image from one ImageView to another when the Copy Image button is pressed and restores the original state when the Restore button is pressed.
 
-Widgets:
 
-ImageView 1 — displays the original image
-ImageView 2 — initially empty
-Copy Image button
-Restore button
-TextView — displays the current status
 
-When Copy is clicked, copy the image and display "Image Copied Successfully". When Restore is clicked, remove the image from ImageView 2 and display "Image Restored to Initial State".
+FILE: MainActivity.java
 
-MainActivity.java
-package com.example.adarsh3;
+package com.example.studentmarks;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-
+import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    ImageView img1, img2;
-    Button btnCopy, btnRestore;
-    TextView tvStatus;
+    EditText name, roll;
+    Button next;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        img1 = findViewById(R.id.img1);
-        img2 = findViewById(R.id.img2);
+        name = findViewById(R.id.name);
+        roll = findViewById(R.id.roll);
+        next = findViewById(R.id.next);
 
-        btnCopy = findViewById(R.id.btnCopy);
-        btnRestore = findViewById(R.id.btnRestore);
+        next.setOnClickListener(v -> {
+            Intent i = new Intent(MainActivity.this,
+                    MarksActivity.class);
 
-        tvStatus = findViewById(R.id.tvStatus);
+            i.putExtra("name", name.getText().toString());
+            i.putExtra("roll", roll.getText().toString());
 
-        // Copy image
-        btnCopy.setOnClickListener(v -> {
-
-            // Get image from img1 and put it in img2
-            img2.setImageDrawable(img1.getDrawable());
-
-            tvStatus.setText("Image Copied Successfully");
-        });
-
-        // Restore image
-        btnRestore.setOnClickListener(v -> {
-
-            // Remove image from img2
-            img2.setImageDrawable(null);
-
-            tvStatus.setText("Image Restored to Initial State");
+            startActivity(i);
         });
     }
 }
-activity_main.xml
+
+
+FILE: MarksActivity.java
+
+package com.example.studentmarks;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.*;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MarksActivity extends AppCompatActivity {
+
+    EditText m1, m2, m3;
+    Button calculate;
+    String name, roll;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_marks);
+
+        name = getIntent().getStringExtra("name");
+        roll = getIntent().getStringExtra("roll");
+
+        m1 = findViewById(R.id.m1);
+        m2 = findViewById(R.id.m2);
+        m3 = findViewById(R.id.m3);
+        calculate = findViewById(R.id.calculate);
+
+        calculate.setOnClickListener(v -> {
+            int a = Integer.parseInt(m1.getText().toString());
+            int b = Integer.parseInt(m2.getText().toString());
+            int c = Integer.parseInt(m3.getText().toString());
+
+            int total = a + b + c;
+            double average = total / 3.0;
+
+            Intent i = new Intent(MarksActivity.this,
+                    ResultActivity.class);
+
+            i.putExtra("name", name);
+            i.putExtra("roll", roll);
+            i.putExtra("total", total);
+            i.putExtra("average", average);
+
+            startActivity(i);
+        });
+    }
+}
+
+
+FILE: ResultActivity.java
+
+package com.example.studentmarks;
+
+import android.os.Bundle;
+import android.widget.*;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class ResultActivity extends AppCompatActivity {
+
+    TextView result;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_result);
+
+        result = findViewById(R.id.result);
+
+        String name = getIntent().getStringExtra("name");
+        String roll = getIntent().getStringExtra("roll");
+        int total = getIntent().getIntExtra("total", 0);
+        double average = getIntent().getDoubleExtra("average", 0.0);
+
+        result.setText("Student Name: " + name
+                + "\nRoll Number: " + roll
+                + "\nTotal Marks: " + total
+                + "\nAverage: " + average);
+    }
+}
+
+
+FILE: res/layout/activity_main.xml
+
 <?xml version="1.0" encoding="utf-8"?>
-
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp">
 
-    <ImageView
-        android:id="@+id/img1"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:src="@drawable/image"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="40dp" />
+    <EditText
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Student Name" />
 
-    <ImageView
-        android:id="@+id/img2"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="200dp"
-        android:layout_marginTop="40dp" />
+    <EditText
+        android:id="@+id/roll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Roll Number"
+        android:inputType="number" />
 
     <Button
-        android:id="@+id/btnCopy"
-        android:layout_width="wrap_content"
+        android:id="@+id/next"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Copy Image"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="190dp" />
+        android:text="Next" />
+
+</LinearLayout>
+
+
+FILE: res/layout/activity_marks.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <EditText
+        android:id="@+id/m1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Subject 1 Marks"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/m2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Subject 2 Marks"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/m3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Subject 3 Marks"
+        android:inputType="numberDecimal" />
 
     <Button
-        android:id="@+id/btnRestore"
-        android:layout_width="wrap_content"
+        android:id="@+id/calculate"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Restore"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="200dp"
-        android:layout_marginTop="190dp" />
+        android:text="Calculate" />
+
+</LinearLayout>
+
+
+FILE: res/layout/activity_result.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp">
 
     <TextView
-        android:id="@+id/tvStatus"
-        android:layout_width="wrap_content"
+        android:id="@+id/result"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Status"
-        android:textSize="24sp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="270dp" />
+        android:textSize="22sp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
+
+
+FILE: AndroidManifest.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application
+        android:allowBackup="true"
+        android:label="Student Marks"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.StudentMarks">
+
+        <activity android:name=".ResultActivity" />
+
+        <activity android:name=".MarksActivity" />
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+
+    </application>
+
+</manifest>
