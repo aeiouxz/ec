@@ -1,155 +1,145 @@
-## Intent Type: Explicit Intent
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from scipy.stats import norm, ttest_ind
+from sklearn.linear_model import LinearRegression, LogisticRegression
+from sklearn.cluster import KMeans
+from sklearn.metrics import mean_squared_error, accuracy_score, precision_score, recall_score, confusion_matrix, ConfusionMatrixDisplay
+from sklearn.model_selection import train_test_split
 
-you should say which intent is that too .... **To send multiple fields from one activity to another in an Android app:**
-1. Create Two Activities – MainActivity (Sender) and SecondActivity (Receiver).
-2. Use Intent to Pass Multiple Fields (e.g., Name, Age, Email).
-3. Retrieve Data in SecondActivity and Display it.
+# 1. LOAD AND INSPECT DATA
+df = pd.read_csv("DataScience_10_Rows.csv")
 
-### 1. MainActivity.java (Sender)
+print("First 10 rows:")
+print(df.head(10))
 
-```
-package com.example.intentdemo;
+print("\nData types:")
+print(df.dtypes)
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.widget.Button;
-import android.widget.EditText;
-import androidx.appcompat.app.AppCompatActivity;
+# Filter setosa flowers
+print("\nSetosa flowers:")
+print(df[df["Species"] == "setosa"][["SepalLength", "PetalWidth"]])
 
-public class MainActivity extends AppCompatActivity {
+# Convert sepal length into categories
+df["SepalCategory"] = pd.cut(
+    df["SepalLength"], bins=3, labels=["Low", "Medium", "High"]
+)
 
-    EditText name, age, email;
-    Button send;
+# 2. HANDLE MISSING VALUES
+df["Age"] = df["Age"].fillna(df["Age"].mean())
+df["Gender"] = df["Gender"].fillna(df["Gender"].mode()[0])
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+# 3. REMOVE SALARY OUTLIERS
+Q1 = df["Salary"].quantile(0.25)
+Q3 = df["Salary"].quantile(0.75)
+IQR = Q3 - Q1
 
-        name = findViewById(R.id.name);
-        age = findViewById(R.id.age);
-        email = findViewById(R.id.email);
-        send = findViewById(R.id.send);
+df = df[(df["Salary"] >= Q1 - 1.5 * IQR) &
+        (df["Salary"] <= Q3 + 1.5 * IQR)]
 
-        send.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this,
-                    SecondActivity.class);
+plt.boxplot(df["Salary"])
+plt.title("Salary Boxplot")
+plt.show()
 
-            intent.putExtra("name", name.getText().toString());
-            intent.putExtra("age", age.getText().toString());
-            intent.putExtra("email", email.getText().toString());
+# 4. ENCODE GENDER
+df = pd.get_dummies(df, columns=["Gender"], drop_first=True, dtype=int)
 
-            startActivity(intent);
-        });
-    }
-}
-```
+# 5. DESCRIPTIVE STATISTICS
+print("\nMean:", df["MonthlySales"].mean())
+print("Median:", df["MonthlySales"].median())
+print("Mode:", df["MonthlySales"].mode()[0])
+print("Variance:", df["MonthlySales"].var())
+print("Standard deviation:", df["MonthlySales"].std())
 
-### 2. SecondActivity.java (Receiver)
+# 6. CORRELATION HEATMAP
+corr = df.corr(numeric_only=True)
+sns.heatmap(corr, annot=False, cmap="coolwarm")
+plt.title("Correlation Heatmap")
+plt.show()
 
-```
-package com.example.intentdemo;
+# 7. HISTOGRAM AND SCATTER PLOT
+plt.hist(df["Age"], bins=5)
+plt.title("Age Histogram")
+plt.xlabel("Age")
+plt.ylabel("Frequency")
+plt.show()
 
-import android.os.Bundle;
-import android.widget.TextView;
-import androidx.appcompat.app.AppCompatActivity;
+plt.scatter(df["Experience"], df["Salary"])
+plt.title("Experience vs Salary")
+plt.xlabel("Years of Experience")
+plt.ylabel("Salary")
+plt.show()
 
-public class SecondActivity extends AppCompatActivity {
+# 8. NORMAL DISTRIBUTION
+mean = df["TestScore"].mean()
+std = df["TestScore"].std()
+x = np.linspace(df["TestScore"].min(), df["TestScore"].max(), 100)
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_second);
+plt.hist(df["TestScore"], bins=5, density=True)
+plt.plot(x, norm.pdf(x, mean, std), color="red")
+plt.title("Normal Distribution")
+plt.show()
 
-        TextView result = findViewById(R.id.result);
+# 9. T-TEST
+a = df[df["Branch"] == "A"]["MonthlySales"]
+b = df[df["Branch"] == "B"]["MonthlySales"]
 
-        String name = getIntent().getStringExtra("name");
-        String age = getIntent().getStringExtra("age");
-        String email = getIntent().getStringExtra("email");
+t, p = ttest_ind(a, b)
+print("\nT-test p-value:", p)
 
-        result.setText("Name: " + name
-                + "\nAge: " + age
-                + "\nEmail: " + email);
-    }
-}
-```
+if p < 0.05:
+    print("Significant difference")
+else:
+    print("No significant difference")
 
-### 3. `activity_main.xml` (Sender UI)
+# 10. LINEAR REGRESSION
+df["Location"] = df["Location"].map({"City": 1, "Town": 0})
 
-Place three `EditText` fields and one `Button` in a vertical `LinearLayout`.
+X = df[["Area", "Bedrooms", "Location"]]
+y = df["Price"]
 
-```
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="20dp">
+model = LinearRegression()
+model.fit(X, y)
+pred = model.predict(X)
 
-    <EditText
-        android:id="@+id/name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter Name" />
+print("\nLinear Regression MSE:", mean_squared_error(y, pred))
 
-    <EditText
-        android:id="@+id/age"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter Age"
-        android:inputType="number" />
+# 11. LOGISTIC REGRESSION: PREDICT CHURN
+X = df[["Age", "Salary", "Experience", "Tenure", "MonthlyCharges"]]
+y = df["Churn"]
 
-    <EditText
-        android:id="@+id/email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter Email"
-        android:inputType="textEmailAddress" />
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=1, stratify=y
+)
 
-    <Button
-        android:id="@+id/send"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Send Data" />
+model = LogisticRegression(max_iter=1000)
+model.fit(X_train, y_train)
+pred = model.predict(X_test)
 
-</LinearLayout>
-```
+print("\nAccuracy:", accuracy_score(y_test, pred))
+print("Precision:", precision_score(y_test, pred, zero_division=0))
+print("Recall:", recall_score(y_test, pred, zero_division=0))
 
-### 4. `activity_second.xml` (Receiver UI)
+# 12. CONFUSION MATRIX
+cm = confusion_matrix(y_test, pred)
+print("\nConfusion Matrix:")
+print(cm)
 
-```
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="20dp">
+ConfusionMatrixDisplay(confusion_matrix=cm).plot()
+plt.title("Confusion Matrix")
+plt.show()
 
-    <TextView
-        android:id="@+id/result"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="20sp" />
+# 13. K-MEANS CLUSTERING
+X = df[["Income", "SpendingScore"]]
 
-</LinearLayout>
-```
+kmeans = KMeans(n_clusters=3, random_state=1, n_init=10)
+df["Cluster"] = kmeans.fit_predict(X)
 
-### 5. AndroidManifest.xml
+plt.scatter(df["Income"], df["SpendingScore"], c=df["Cluster"])
+plt.xlabel("Income")
+plt.ylabel("Spending Score")
+plt.title("Customer Clusters")
+plt.show()
 
-Make sure both activities are declared inside the `application` tag. Keep `MainActivity` as the launcher activity.
-
-```
-<activity android:name=".SecondActivity" />
-
-<activity
-    android:name=".MainActivity"
-    android:exported="true">
-    <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-        <category android:name="android.intent.category.LAUNCHER" />
-    </intent-filter>
-</activity>
-```
-
+print("\nProgram completed.")
