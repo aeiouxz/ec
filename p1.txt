@@ -1,145 +1,94 @@
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-from scipy.stats import norm, ttest_ind
-from sklearn.linear_model import LinearRegression, LogisticRegression
-from sklearn.cluster import KMeans
-from sklearn.metrics import mean_squared_error, accuracy_score, precision_score, recall_score, confusion_matrix, ConfusionMatrixDisplay
-from sklearn.model_selection import train_test_split
+# Experiment 12 – Install kubectl and Start Minikube on Windows
+### 1. Download kubectl
+```
+curl.exe -LO "https://dl.k8s.io/release/v1.37.0/bin/windows/amd64/kubectl.exe"
+```
+### 2. Verify kubectl installation
+```
+kubectl version --client
+```
+Detailed version:
+```
+kubectl version --client --output=yaml
+```
+### 3. Create Minikube directory
+Run PowerShell as Administrator.
+```
+New-Item -Path 'C:\' -Name 'minikube' -ItemType Directory -Force
+```
+### 4. Download Minikube
+```
+$ProgressPreference = 'SilentlyContinue'
+Invoke-WebRequest -OutFile 'C:\minikube\minikube.exe' -Uri 'https://github.com/kubernetes/minikube/releases/latest/download/minikube-windows-amd64.exe' -UseBasicParsing
+```
+### 5. Add Minikube to PATH
+```
+$oldPath = [Environment]::GetEnvironmentVariable('Path', [EnvironmentVariableTarget]::Machine)
 
-# 1. LOAD AND INSPECT DATA
-df = pd.read_csv("DataScience_10_Rows.csv")
+if ($oldPath.Split(';') -inotcontains 'C:\minikube') {
+    [Environment]::SetEnvironmentVariable('Path', "$oldPath;C:\minikube", [EnvironmentVariableTarget]::Machine)
+}
+```
+Close and reopen PowerShell.
 
-print("First 10 rows:")
-print(df.head(10))
-
-print("\nData types:")
-print(df.dtypes)
-
-# Filter setosa flowers
-print("\nSetosa flowers:")
-print(df[df["Species"] == "setosa"][["SepalLength", "PetalWidth"]])
-
-# Convert sepal length into categories
-df["SepalCategory"] = pd.cut(
-    df["SepalLength"], bins=3, labels=["Low", "Medium", "High"]
-)
-
-# 2. HANDLE MISSING VALUES
-df["Age"] = df["Age"].fillna(df["Age"].mean())
-df["Gender"] = df["Gender"].fillna(df["Gender"].mode()[0])
-
-# 3. REMOVE SALARY OUTLIERS
-Q1 = df["Salary"].quantile(0.25)
-Q3 = df["Salary"].quantile(0.75)
-IQR = Q3 - Q1
-
-df = df[(df["Salary"] >= Q1 - 1.5 * IQR) &
-        (df["Salary"] <= Q3 + 1.5 * IQR)]
-
-plt.boxplot(df["Salary"])
-plt.title("Salary Boxplot")
-plt.show()
-
-# 4. ENCODE GENDER
-df = pd.get_dummies(df, columns=["Gender"], drop_first=True, dtype=int)
-
-# 5. DESCRIPTIVE STATISTICS
-print("\nMean:", df["MonthlySales"].mean())
-print("Median:", df["MonthlySales"].median())
-print("Mode:", df["MonthlySales"].mode()[0])
-print("Variance:", df["MonthlySales"].var())
-print("Standard deviation:", df["MonthlySales"].std())
-
-# 6. CORRELATION HEATMAP
-corr = df.corr(numeric_only=True)
-sns.heatmap(corr, annot=False, cmap="coolwarm")
-plt.title("Correlation Heatmap")
-plt.show()
-
-# 7. HISTOGRAM AND SCATTER PLOT
-plt.hist(df["Age"], bins=5)
-plt.title("Age Histogram")
-plt.xlabel("Age")
-plt.ylabel("Frequency")
-plt.show()
-
-plt.scatter(df["Experience"], df["Salary"])
-plt.title("Experience vs Salary")
-plt.xlabel("Years of Experience")
-plt.ylabel("Salary")
-plt.show()
-
-# 8. NORMAL DISTRIBUTION
-mean = df["TestScore"].mean()
-std = df["TestScore"].std()
-x = np.linspace(df["TestScore"].min(), df["TestScore"].max(), 100)
-
-plt.hist(df["TestScore"], bins=5, density=True)
-plt.plot(x, norm.pdf(x, mean, std), color="red")
-plt.title("Normal Distribution")
-plt.show()
-
-# 9. T-TEST
-a = df[df["Branch"] == "A"]["MonthlySales"]
-b = df[df["Branch"] == "B"]["MonthlySales"]
-
-t, p = ttest_ind(a, b)
-print("\nT-test p-value:", p)
-
-if p < 0.05:
-    print("Significant difference")
-else:
-    print("No significant difference")
-
-# 10. LINEAR REGRESSION
-df["Location"] = df["Location"].map({"City": 1, "Town": 0})
-
-X = df[["Area", "Bedrooms", "Location"]]
-y = df["Price"]
-
-model = LinearRegression()
-model.fit(X, y)
-pred = model.predict(X)
-
-print("\nLinear Regression MSE:", mean_squared_error(y, pred))
-
-# 11. LOGISTIC REGRESSION: PREDICT CHURN
-X = df[["Age", "Salary", "Experience", "Tenure", "MonthlyCharges"]]
-y = df["Churn"]
-
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.3, random_state=1, stratify=y
-)
-
-model = LogisticRegression(max_iter=1000)
-model.fit(X_train, y_train)
-pred = model.predict(X_test)
-
-print("\nAccuracy:", accuracy_score(y_test, pred))
-print("Precision:", precision_score(y_test, pred, zero_division=0))
-print("Recall:", recall_score(y_test, pred, zero_division=0))
-
-# 12. CONFUSION MATRIX
-cm = confusion_matrix(y_test, pred)
-print("\nConfusion Matrix:")
-print(cm)
-
-ConfusionMatrixDisplay(confusion_matrix=cm).plot()
-plt.title("Confusion Matrix")
-plt.show()
-
-# 13. K-MEANS CLUSTERING
-X = df[["Income", "SpendingScore"]]
-
-kmeans = KMeans(n_clusters=3, random_state=1, n_init=10)
-df["Cluster"] = kmeans.fit_predict(X)
-
-plt.scatter(df["Income"], df["SpendingScore"], c=df["Cluster"])
-plt.xlabel("Income")
-plt.ylabel("Spending Score")
-plt.title("Customer Clusters")
-plt.show()
-
-print("\nProgram completed.")
+### 6. Verify Minikube installation
+```
+minikube version
+```
+## 7. Start Minikube cluster
+```
+minikube start
+```
+### 8. Check cluster status
+``
+minikube status
+```
+### 9. Interact with Kubernetes cluster
+```
+kubectl get nodes
+```
+```
+kubectl get pods -A
+```
+Alternative using Minikube:
+```
+minikube kubectl -- get pods -A
+```
+### 10. Launch Kubernetes Dashboard
+```
+minikube dashboard
+```
+### 11. Additional useful commands (Added)
+Stop Minikube:
+```
+minikube stop
+```
+Delete Minikube cluster:
+```
+minikube delete
+```
+Restart Minikube:
+```
+minikube start
+```
+View cluster information:
+```
+kubectl cluster-info
+```
+View all nodes:
+```
+kubectl get nodes -o wide
+```
+View pods in current namespace:
+```
+kubectl get pods
+```
+View all namespaces:
+``
+kubectl get namespaces
+```
+Describe a node:
+```
+kubectl describe nodes
+```
+Experiment 12 completed
