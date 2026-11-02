@@ -1,241 +1,46 @@
+Step 1 – Start Minikube
+minikube start
 
+Check nodes:
+kubectl get nodes
 
+Step 2 – Create a Docker image
+If you have a Dockerfile:
+docker build -t myapp:v1 .
 
-FILE: MainActivity.java
+Check the image:
+docker images
 
-package com.example.studentmarks;
+Step 3 – Make the image available to Minikube
+If the image is built locally:
+minikube image load myapp:v1
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.widget.*;
-import androidx.appcompat.app.AppCompatActivity;
+This loads your Docker image into Minikube.
+Step 4 – Deploy the image in Kubernetes
+kubectl create deployment myapp --image=myapp:v1 --image-pull-policy=IfNotPresent
 
-public class MainActivity extends AppCompatActivity {
+Here:
+- myapp = Deployment name.
+- --image=myapp:v1 = Docker image.
+- IfNotPresent = Use the locally available image if it is already present.
+Step 5 – Check deployment
+kubectl get deployments
 
-    EditText name, roll;
-    Button next;
+kubectl get pods
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+Step 6 – Check detailed information
+kubectl describe deployment myapp
 
-        name = findViewById(R.id.name);
-        roll = findViewById(R.id.roll);
-        next = findViewById(R.id.next);
+kubectl logs deployment/myapp
 
-        next.setOnClickListener(v -> {
-            Intent i = new Intent(MainActivity.this,
-                    MarksActivity.class);
+Step 7 – Expose the application
+If your application runs on port 3000:
+kubectl expose deployment myapp --type=NodePort --port=3000
 
-            i.putExtra("name", name.getText().toString());
-            i.putExtra("roll", roll.getText().toString());
+Step 8 – Access the application
+minikube service myapp
 
-            startActivity(i);
-        });
-    }
-}
-
-
-FILE: MarksActivity.java
-
-package com.example.studentmarks;
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.widget.*;
-import androidx.appcompat.app.AppCompatActivity;
-
-public class MarksActivity extends AppCompatActivity {
-
-    EditText m1, m2, m3;
-    Button calculate;
-    String name, roll;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_marks);
-
-        name = getIntent().getStringExtra("name");
-        roll = getIntent().getStringExtra("roll");
-
-        m1 = findViewById(R.id.m1);
-        m2 = findViewById(R.id.m2);
-        m3 = findViewById(R.id.m3);
-        calculate = findViewById(R.id.calculate);
-
-        calculate.setOnClickListener(v -> {
-            int a = Integer.parseInt(m1.getText().toString());
-            int b = Integer.parseInt(m2.getText().toString());
-            int c = Integer.parseInt(m3.getText().toString());
-
-            int total = a + b + c;
-            double average = total / 3.0;
-
-            Intent i = new Intent(MarksActivity.this,
-                    ResultActivity.class);
-
-            i.putExtra("name", name);
-            i.putExtra("roll", roll);
-            i.putExtra("total", total);
-            i.putExtra("average", average);
-
-            startActivity(i);
-        });
-    }
-}
-
-
-FILE: ResultActivity.java
-
-package com.example.studentmarks;
-
-import android.os.Bundle;
-import android.widget.*;
-import androidx.appcompat.app.AppCompatActivity;
-
-public class ResultActivity extends AppCompatActivity {
-
-    TextView result;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_result);
-
-        result = findViewById(R.id.result);
-
-        String name = getIntent().getStringExtra("name");
-        String roll = getIntent().getStringExtra("roll");
-        int total = getIntent().getIntExtra("total", 0);
-        double average = getIntent().getDoubleExtra("average", 0.0);
-
-        result.setText("Student Name: " + name
-                + "\nRoll Number: " + roll
-                + "\nTotal Marks: " + total
-                + "\nAverage: " + average);
-    }
-}
-
-
-FILE: res/layout/activity_main.xml
-
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="20dp">
-
-    <EditText
-        android:id="@+id/name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Student Name" />
-
-    <EditText
-        android:id="@+id/roll"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Roll Number"
-        android:inputType="number" />
-
-    <Button
-        android:id="@+id/next"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Next" />
-
-</LinearLayout>
-
-
-FILE: res/layout/activity_marks.xml
-
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="20dp">
-
-    <EditText
-        android:id="@+id/m1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Subject 1 Marks"
-        android:inputType="numberDecimal" />
-
-    <EditText
-        android:id="@+id/m2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Subject 2 Marks"
-        android:inputType="numberDecimal" />
-
-    <EditText
-        android:id="@+id/m3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Subject 3 Marks"
-        android:inputType="numberDecimal" />
-
-    <Button
-        android:id="@+id/calculate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Calculate" />
-
-</LinearLayout>
-
-
-FILE: res/layout/activity_result.xml
-
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="20dp">
-
-    <TextView
-        android:id="@+id/result"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="22sp" />
-
-</LinearLayout>
-
-
-FILE: AndroidManifest.xml
-
-<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <application
-        android:allowBackup="true"
-        android:label="Student Marks"
-        android:supportsRtl="true"
-        android:theme="@style/Theme.StudentMarks">
-
-        <activity android:name=".ResultActivity" />
-
-        <activity android:name=".MarksActivity" />
-
-        <activity
-            android:name=".MainActivity"
-            android:exported="true">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
-        </activity>
-
-    </application>
-
-</manifest>
+This opens the application in your browser.
+Step 9 – Delete the deployment
+kubectl delete service myapp
+kubectl delete deployment myapp
